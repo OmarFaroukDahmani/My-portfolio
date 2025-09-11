@@ -1,0 +1,13 @@
+GET http://localhost:8080/skills
+Content-Type: application/json
+
+
+###
+
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{
+    "username" : "omar",
+    "password" : "Ofd93992373@#"
+}
