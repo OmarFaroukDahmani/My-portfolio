@@ -72,6 +72,55 @@ app.post("/login", (req, res) => {
   });
 });
 
+app.post('/add_project', (req, res) => {
+  const { title, description, image, link, github } = req.body;
+
+  const sql = 'INSERT INTO projects (title, description, image, link, github) VALUES (?, ?, ?, ?, ?)';
+
+  db.query(sql, [title, description, image, link, github], (err, results) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.status(200).json({ message: "Project created successfully" });
+  });
+});
+
+
+app.put('/edit/:id', (req, res) => {
+  const Id = req.params.id;
+  const { title, description, image, link, github } = req.body;
+  const sql = "UPDATE projects SET title=?, description=?, image=?, link=?, github=? WHERE id=? ";
+  db.query(sql, [title, description, image, link, github, Id], (err, result) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ message: "Project updated successfully!" });
+  });
+});
+
+app.get("/projects/:id", (req, res) => {
+  const { id } = req.params;
+  const sql = "SELECT * FROM projects WHERE id = ?";
+
+  db.query(sql, [id], (err, results) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (results.length === 0) return res.status(404).json({ error: "Project not found" });
+
+    res.json(results[0]);
+  });
+});
+
+
+app.delete('/delete/:id', (req, res) => {
+  const { id } = req.params;
+
+  const sql = 'DELETE FROM projects WHERE id = ?';
+
+  db.query(sql, [id], (err, results) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ message: "Project not found" });
+    }
+    res.status(200).json({ message: "Project deleted successfully" });
+  });
+});
+
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
