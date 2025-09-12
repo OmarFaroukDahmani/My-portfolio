@@ -4,6 +4,8 @@ import "../styles/admin.css";
 
 export default function Admin() {
   const [projects, setProjects] = useState([]);
+  const [showSkills, setShowSkills] = useState([]);
+  const [skill, setSkill] = useState({ name: "" });
   const [project, setProject] = useState({
     title: "",
     description: "",
@@ -13,6 +15,27 @@ export default function Admin() {
   });
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
+
+  // Fetch skills
+  useEffect(() => {
+    const getSkills = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/skills", {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        });
+
+        if (!response.ok) throw new Error("Failed to fetch skills");
+
+        const data = await response.json();
+        setShowSkills(data);
+      } catch (error) {
+        console.error("Error fetching skills:", error);
+      }
+    };
+
+    getSkills();
+  }, []);
 
   // Fetch projects
   useEffect(() => {
@@ -83,12 +106,53 @@ export default function Admin() {
     }
   };
 
+  // Add skill
+  const handleAddingSkill = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("http://localhost:8080/add_skill", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(skill),
+      });
+
+      const data = await response.json();
+      alert(data.message);
+
+      // Refresh UI
+      setShowSkills([...showSkills, skill]);
+      setSkill({ name: "" });
+    } catch (error) {
+      console.error("Error adding skill:", error);
+    }
+  };
+
+  // Delete Skill 
+  const handleDeleteSkill = async (id, name) => {
+  const confirmDelete = window.confirm(`Delete skill "${name}"?`);
+  if (!confirmDelete) return;
+
+  try {
+    const res = await fetch(`http://localhost:8080/delete_skill/${id}`, {
+      method: "DELETE",
+    });
+    const data = await res.json();
+    alert(data.message);
+
+    // Remove skill from UI
+    setShowSkills(showSkills.filter(skill => skill.id !== id));
+  } catch (err) {
+    console.error("Error deleting skill:", err);
+  }
+};
+
+
   return (
     <div className="admin-container">
       <h1 className="welcome">Welcome {user?.username}</h1>
 
       {/* Add project form */}
-      <div className="add-project">
+      <div className="card">
         <h2>Add Project</h2>
         <form onSubmit={handleAddingProject} className="project-form">
           <input
@@ -126,12 +190,38 @@ export default function Admin() {
             value={project.github}
             onChange={(e) => setProject({ ...project, github: e.target.value })}
           />
+
+          <div className="checkbox-group">
+            <p>Select Skills:</p>
+            {showSkills.map((s, index) => (
+              <div key={index} className="checkbox-item">
+                <input type="checkbox" value={s.name} id={`skill-${index}`} />
+                <label htmlFor={`skill-${index}`}>{s.name}</label>
+              </div>
+            ))}
+          </div>
+
           <button type="submit" className="submit-btn">Add Project</button>
         </form>
       </div>
 
-      {/* List projects */}
-      <div className="projects-list">
+      {/* Add skill */}
+      <div className="card">
+        <h2>Add Skill</h2>
+        <form onSubmit={handleAddingSkill} className="skill-form">
+          <input
+            type="text"
+            placeholder="Enter your skill"
+            required
+            value={skill.name}
+            onChange={(e) => setSkill({ ...skill, name: e.target.value })}
+          />
+          <button type="submit" className="submit-btn">Add Skill</button>
+        </form>
+      </div>
+
+      {/* Projects list */}
+      <div className="card">
         <h2>My Projects</h2>
         <table className="projects-table">
           <thead>
@@ -164,6 +254,25 @@ export default function Admin() {
           </tbody>
         </table>
       </div>
+
+      {/* Skills list */}
+      <div className="card">
+        <h2>My Skills</h2>
+        <ul className="skills-list">
+          {showSkills.map((s) => (
+            <li key={s.id} className="skill-item">
+              {s.name}
+              <button
+                className="delete-skill-btn"
+                onClick={() => handleDeleteSkill(s.id, s.name)}
+              >
+                X
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+
     </div>
   );
 }

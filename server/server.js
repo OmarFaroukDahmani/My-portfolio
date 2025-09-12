@@ -10,6 +10,8 @@ app.use(express.json());
 app.use(cors({ origin: 'http://localhost:5173' }));
 
 
+// show a project
+
 app.get('/projects', (req, res) => {
   const sql = `
     SELECT 
@@ -32,7 +34,6 @@ app.get('/projects', (req, res) => {
       return res.status(500).json({ error: "Database error" });
     }
 
-    // Convert skills from comma-separated string → array
     const projects = results.map(project => ({
       ...project,
       skills: project.skills ? project.skills.split(",") : []
@@ -42,6 +43,7 @@ app.get('/projects', (req, res) => {
   });
 });
 
+// show skills
 
 app.get('/skills', (req, res) => {
   const sql = 'SELECT * FROM skills';
@@ -54,6 +56,8 @@ app.get('/skills', (req, res) => {
     res.json(results);
   });
 });
+
+// login
 
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
@@ -72,6 +76,8 @@ app.post("/login", (req, res) => {
   });
 });
 
+// add project 
+
 app.post('/add_project', (req, res) => {
   const { title, description, image, link, github } = req.body;
 
@@ -83,6 +89,7 @@ app.post('/add_project', (req, res) => {
   });
 });
 
+// edit project
 
 app.put('/edit/:id', (req, res) => {
   const Id = req.params.id;
@@ -93,6 +100,8 @@ app.put('/edit/:id', (req, res) => {
     res.json({ message: "Project updated successfully!" });
   });
 });
+
+// show non detailted project
 
 app.get("/projects/:id", (req, res) => {
   const { id } = req.params;
@@ -106,6 +115,7 @@ app.get("/projects/:id", (req, res) => {
   });
 });
 
+// delete project
 
 app.delete('/delete/:id', (req, res) => {
   const { id } = req.params;
@@ -118,6 +128,34 @@ app.delete('/delete/:id', (req, res) => {
       return res.status(404).json({ message: "Project not found" });
     }
     res.status(200).json({ message: "Project deleted successfully" });
+  });
+});
+
+// Add skill
+app.post("/add_skill", (req, res) => {
+  const { name } = req.body;
+
+  const sql = "INSERT INTO skills (name) VALUES (?)";
+
+  db.query(sql, [name], (err, results) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.status(200).json({ message: "Skill added successfully" });
+  });
+});
+
+
+// Delete skill
+app.delete('/delete_skill/:id', (req, res) => {
+  const { id } = req.params;
+
+  const sql = 'DELETE FROM skills WHERE id = ?';
+
+  db.query(sql, [id], (err, results) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ message: "Skill not found" });
+    }
+    res.status(200).json({ message: "Skill deleted successfully" });
   });
 });
 

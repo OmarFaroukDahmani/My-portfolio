@@ -13,12 +13,12 @@ import {
   FaFileDownload,
   FaPaperPlane,
 } from "react-icons/fa";
-
 import "../styles/home.css";
+import Footer from "../components/Footer";
 
 export default function Home() {
   const [projects, setProjects] = useState([]);
-  const [skills, setSkills] = useState([])
+  const [skills, setSkills] = useState([]);
 
     useEffect(() => {
     const getSkills = async () => {
@@ -234,6 +234,7 @@ export default function Home() {
           </div>
         </section>
       </main>
+      <Footer/>
     </>
   );
 }

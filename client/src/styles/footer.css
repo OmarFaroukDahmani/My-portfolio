@@ -1,0 +1,45 @@
+.footer {
+  background-color: #1a1a1a;
+  color: #fff;
+  padding: 2rem 1rem;
+  text-align: center;
+}
+
+.footer-icons {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.footer-icons a {
+  color: #fff;
+  transition: transform 0.2s, color 0.2s;
+}
+
+.footer-icons a:hover {
+  transform: scale(1.2);
+}
+
+/* Optional: brand colors on hover */
+.linkedin:hover {
+  color: #0077b5;
+}
+.upwork:hover {
+  color: #6fda44;
+}
+.github:hover {
+  color: #333;
+}
+.email:hover {
+  color: #e74c3c;
+}
+.phone:hover {
+  color: #3498db;
+}
+
+.footer-text {
+  font-size: 0.95rem;
+  color: #ccc;
+}

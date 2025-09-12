@@ -1,79 +1,113 @@
-/* Navbar Base */
+/* navbar.css */
+
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Body Modes */
+body.light-mode {
+  background-color: #f0f4f8;
+  color: #222;
+  transition: all 0.3s ease;
+}
+
+body.dark-mode {
+  background-color: #1a1a2e;
+  color: #f0f4f8;
+  transition: all 0.3s ease;
+}
+
+/* Navbar Container */
 .navbar {
   width: 100%;
-  padding: 15px 8%;
-  background: #007bff;
-  color: white;
+  padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background: rgb(62, 213, 255);
+  color: #fff;
   position: fixed;
   top: 0;
-  left: 0;
-  z-index: 100;
+  z-index: 1000;
+  transition: background 0.3s ease;
 }
 
+/* Logo */
 .logo h2 {
+  font-size: 1.8rem;
+  letter-spacing: 2px;
+}
+
+/* Menu Icon */
+.menu-icon {
+  display: none;
   font-size: 1.5rem;
-  font-weight: 700;
+  cursor: pointer;
 }
 
 /* Nav Links */
-.nav ul {
+.nav {
   display: flex;
-  gap: 25px;
+}
+
+.nav ul {
   list-style: none;
+  display: flex;
+  gap: 2rem;
 }
 
-.nav ul li a {
-  color: white;
+.nav ul li a,
+.nav ul li button {
   text-decoration: none;
+  color: #fff;
   font-weight: 500;
-  transition: 0.3s;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
 }
 
-.nav ul li a:hover {
-  color: #ffd700;
+.nav ul li a:hover,
+.nav ul li button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
-/* Burger Icon */
-.menu-icon {
-  display: none;
-  font-size: 1.8rem;
+/* Dark/Light Toggle Button */
+.dark-toggle-btn {
+  border: none;
+  background: rgba(255, 255, 255, 0.2);
   cursor: pointer;
-  z-index: 200;
 }
 
 /* Responsive */
-@media (max-width: 900px) {
+@media (max-width: 768px) {
   .menu-icon {
     display: block;
   }
-
+  
   .nav {
-    position: fixed;
-    top: 0;
-    right: -100%;
-    height: 100vh;
-    width: 240px;
-    background: #0056b3;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    transition: right 0.3s ease-in-out;
-  }
-
-  .nav.active {
+    position: absolute;
+    top: 100%;
     right: 0;
+    width: 100%;
+    background: rgb(17, 183, 254);
+    flex-direction: column;
+    align-items: center;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
   }
-
+  
+  .nav.active {
+    max-height: 300px;
+  }
+  
   .nav ul {
     flex-direction: column;
-    gap: 30px;
-  }
-
-  .nav ul li a {
-    font-size: 1.2rem;
+    gap: 1rem;
+    padding: 1rem 0;
   }
 }
